@@ -43,6 +43,8 @@ jobs:
             echo "G_CHANGED=true" >> build-env
           fi
 
+      - run: cat build-env
+
       - uses: actions/upload-artifact@master
         with:
           name: build-env
@@ -75,7 +77,7 @@ jobs:
       - name: Build
         if: env.A_CHANGED == 'true'
         run: |
-          mkdir alpha/dist
+          mkdir -p alpha/dist
           cp alpha/file alpha/dist/
 
       - uses: actions/upload-artifact@master
@@ -117,7 +119,7 @@ jobs:
       - name: Build
         if: env.B_CHANGED == 'true'
         run: |
-          mkdir beta/dist
+          mkdir -p beta/dist
           cp beta/file-b beta/dist/
 
       - uses: actions/upload-artifact@master
@@ -159,8 +161,8 @@ jobs:
       - name: Build
         if: env.G_CHANGED == 'true'
         run: |
-          mkdir gama/dist
-          cp gama/file-g beta/dist/
+          mkdir -p gama/dist
+          cp gama/file-g gama/dist/
 
       - uses: actions/upload-artifact@master
         if: env.G_CHANGED == 'true'
