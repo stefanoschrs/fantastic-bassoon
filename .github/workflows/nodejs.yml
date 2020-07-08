@@ -1,0 +1,80 @@
+name: Node.js CI
+
+jobs:
+  calculate-build-vars:
+    name: Calculate build vars
+
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Calculate alpha
+        run: |
+          readonly local A_CHANGED=$(git diff --name-only origin/master HEAD | grep alpha)
+          if [[ "A_CHANGED" == "" ]]; then
+            echo "A_CHANGED=false" >> build-env
+          else
+            echo "A_CHANGED=true" >> build-env
+          fi
+      - name: Calculate beta
+        run: |
+          readonly local B_CHANGED=$(git diff --name-only origin/master HEAD | grep beta)
+          if [[ "B_CHANGED" == "" ]]; then
+            echo "B_CHANGED=false" >> build-env
+          else
+            echo "B_CHANGED=true" >> build-env
+          fi
+      - name: Calculate gama
+        run: |
+          readonly local G_CHANGED=$(git diff --name-only origin/master HEAD | grep gama)
+          if [[ "G_CHANGED" == "" ]]; then
+            echo "G_CHANGED=false" >> build-env
+          else
+            echo "G_CHANGED=true" >> build-env
+          fi
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: build-env
+          path: build-env
+
+  build-alpha:
+    name: Build alpha
+
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    needs: [calculate-build-vars]
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: build-env
+          path: build-env
+
+      - name: Update env
+        run: |
+          echo "::set-env name=A_CHANGED::$(cat build-env/build-env | grep A_CHANGED | sed 's/.*=//')"
+
+      - name: Check out code
+        if: env.A_CHANGED == 'true'
+        uses: actions/checkout@v2
+
+      - name: Build
+        if: env.A_CHANGED == 'true'
+        run: |
+          mkdir alpha/dist
+          cp alpha/file alpha/dist/
+
+      - uses: actions/upload-artifact@master
+        if: env.A_CHANGED == 'true'
+        with:
+          name: alpha
+          path: alpha/dist
