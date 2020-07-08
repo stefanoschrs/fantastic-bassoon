@@ -20,7 +20,7 @@ jobs:
 
       - name: Calculate alpha
         run: |
-          echo $(git diff --name-only origin/master HEAD)
+          echo $(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
           readonly local A_CHANGED=$(git diff --name-only origin/master HEAD | grep alpha)
           if [[ "A_CHANGED" == "" ]]; then
             echo "A_CHANGED=false" >> build-env
