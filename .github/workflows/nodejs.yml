@@ -78,3 +78,87 @@ jobs:
         with:
           name: alpha
           path: alpha/dist
+
+  build-beta:
+    name: Build beta
+
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    needs: [calculate-build-vars, build-alpha]
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: build-env
+          path: build-env
+
+      - name: Update env
+        run: |
+          echo "::set-env name=B_CHANGED::$(cat build-env/build-env | grep B_CHANGED | sed 's/.*=//')"
+
+      - name: Check out code
+        if: env.B_CHANGED == 'true'
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@master
+        if: env.B_CHANGED == 'true'
+        with:
+          name: alpha
+          path: dist/alpha
+
+      - name: Build
+        if: env.B_CHANGED == 'true'
+        run: |
+          mkdir beta/dist
+          cp beta/file-b beta/dist/
+
+      - uses: actions/upload-artifact@master
+        if: env.B_CHANGED == 'true'
+        with:
+          name: beta
+          path: beta/dist
+
+  build-gama:
+    name: Build gama
+
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    needs: [calculate-build-vars, build-alpha]
+
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: build-env
+          path: build-env
+
+      - name: Update env
+        run: |
+          echo "::set-env name=G_CHANGED::$(cat build-env/build-env | grep G_CHANGED | sed 's/.*=//')"
+
+      - name: Check out code
+        if: env.G_CHANGED == 'true'
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@master
+        if: env.G_CHANGED == 'true'
+        with:
+          name: alpha
+          path: dist/alpha
+
+      - name: Build
+        if: env.G_CHANGED == 'true'
+        run: |
+          mkdir gama/dist
+          cp gama/file-g beta/dist/
+
+      - uses: actions/upload-artifact@master
+        if: env.G_CHANGED == 'true'
+        with:
+          name: gama
+          path: gama/dist
