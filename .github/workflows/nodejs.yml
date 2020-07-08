@@ -21,7 +21,7 @@ jobs:
       - name: Calculate alpha
         run: |
           readonly local A_CHANGED=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep alpha)
-          if [[ "A_CHANGED" == "" ]]; then
+          if [[ "$A_CHANGED" == "" ]]; then
             echo "A_CHANGED=false" >> build-env
           else
             echo "A_CHANGED=true" >> build-env
@@ -29,7 +29,7 @@ jobs:
       - name: Calculate beta
         run: |
           readonly local B_CHANGED=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep beta)
-          if [[ "B_CHANGED" == "" ]]; then
+          if [[ "$B_CHANGED" == "" ]]; then
             echo "B_CHANGED=false" >> build-env
           else
             echo "B_CHANGED=true" >> build-env
@@ -37,7 +37,7 @@ jobs:
       - name: Calculate gama
         run: |
           readonly local G_CHANGED=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep gama)
-          if [[ "G_CHANGED" == "" ]]; then
+          if [[ "$G_CHANGED" == "" ]]; then
             echo "G_CHANGED=false" >> build-env
           else
             echo "G_CHANGED=true" >> build-env
