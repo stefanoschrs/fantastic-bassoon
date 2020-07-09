@@ -69,7 +69,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p alpha/dist
-          cp -R alpha/* alpha/dist/
+          cp -R alpha/file alpha/folder alpha/dist/
 
       - uses: actions/upload-artifact@master
         with:
