@@ -59,11 +59,17 @@ jobs:
     needs: [calculate-build-vars]
 
     steps:
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
       - uses: actions/cache@v2
         id: cache
         with:
           path: alpha/dist
-          key: ${{ hashFiles('alpha/**') }}
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - name: Check out code
         if: steps.cache.outputs.cache-hit != 'true'
