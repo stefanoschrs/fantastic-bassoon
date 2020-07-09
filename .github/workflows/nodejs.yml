@@ -50,7 +50,19 @@ jobs:
     env:
       CI: true
 
+    needs: [calculate-build-vars]
+
     steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: build-env
+          path: build-env
+
+      - name: Update env
+        run: |
+          echo "::set-env name=B_CHANGED::$(cat build-env/build-env | grep B_CHANGED | sed 's/.*=//')"
+          echo "::set-env name=G_CHANGED::$(cat build-env/build-env | grep G_CHANGED | sed 's/.*=//')"
+
       - name: Get checkum
         id: get-checksum
         shell: bash
@@ -74,6 +86,7 @@ jobs:
           cp -R alpha/file alpha/folder alpha/dist/
 
       - uses: actions/upload-artifact@master
+        if: env.B_CHANGED == 'true' || env.G_CHANGED == 'true'
         with:
           name: alpha
           path: alpha/dist
