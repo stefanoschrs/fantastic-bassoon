@@ -20,11 +20,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: git diff-tree --no-commit-id --name-only -r ${{ github.sha }}
+      - run: git diff --name-only ${{github.ref}} HEAD
 
       - name: Calculate beta
         run: |
-          readonly local B_CHANGED=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep beta)
+          readonly local B_CHANGED=$(git diff --name-only ${{github.ref}} HEAD | grep beta)
           if [[ "$B_CHANGED" == "" ]]; then
             echo "B_CHANGED=false" >> build-env
           else
@@ -32,7 +32,7 @@ jobs:
           fi
       - name: Calculate gama
         run: |
-          readonly local G_CHANGED=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep gama)
+          readonly local G_CHANGED=$(git diff --name-only ${{github.ref}} HEAD | grep gama)
           if [[ "$G_CHANGED" == "" ]]; then
             echo "G_CHANGED=false" >> build-env
           else
