@@ -92,6 +92,8 @@ jobs:
           name: build-env
           path: build-env
 
+      - run: cat build-env/build-env
+
       - name: Update env
         run: |
           echo "::set-env name=B_CHANGED::$(cat build-env/build-env | grep B_CHANGED | sed 's/.*=//')"
